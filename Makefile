@@ -4,10 +4,6 @@
 
 # --- Configuration ---
 APP_NAME        := APP_NAME
-IMAGE_NAME      := ghcr.io/dlactin/$(APP_NAME)
-TAG             := latest
-DOCKERFILE      := Dockerfile
-CONTAINER_NAME  := $(APP_NAME)
 
 # Detect Go files for rebuild triggers
 GO_SOURCES := $(shell find . -type f -name '*.go')
@@ -20,35 +16,10 @@ GO_SOURCES := $(shell find . -type f -name '*.go')
 .PHONY: all
 all: build
 
-# Build the container image
+# Build dusty
 .PHONY: build
-build: $(GO_SOURCES) $(DOCKERFILE)
-	@echo "Building Docker image $(IMAGE_NAME):$(TAG)..."
-	docker build --platform linux/amd64 -t  $(IMAGE_NAME):$(TAG) -f $(DOCKERFILE) .
-	@echo "Image built: $(IMAGE_NAME):$(TAG)"
-
-# Run the app locally using the system Go installation
-.PHONY: start
-start:
-	@echo "Starting App locally..."
-	set -a; source .env; set +a; \
-	go run ./cmd/app
-
-# Run the built container
-.PHONY: run
-run:
-	@echo "Running container $(CONTAINER_NAME)..."
-	docker run --rm --platform linux/amd64 --name $(CONTAINER_NAME) \
-		--env-file .env \
-		$(IMAGE_NAME):$(TAG)
-
-# Clean up any build artifacts
-.PHONY: clean
-clean:
-	@echo "Cleaning up..."
-	docker rmi $(IMAGE_NAME):$(TAG) 2>/dev/null || true
-	go clean
-	@echo "Clean complete"
+build:
+	go build -o $(LOCALBIN)/dusty
 
 # Print the environment for debugging
 .PHONY: env
