@@ -83,12 +83,19 @@ func isMerged(branch string) bool {
 	return strings.Contains(string(out), branch)
 }
 
-func DelBranch(branch string) error {
-	cmd := exec.Command("git", "branch", "-d", branch)
+// Helper to delete the local branch
+// We use -d unless the force flag is used
+func DelBranch(branch string, force bool) error {
+	delFlag := "-d"
 
+	if force {
+		delFlag = "-D"
+	}
+
+	cmd := exec.Command("git", "branch", delFlag, branch)
 	_, err := cmd.Output()
 	if err != nil {
-		fmt.Println("git", "branch", "-d", branch)
+		fmt.Println("git", "branch", delFlag, branch)
 		return fmt.Errorf("error deleting git branch: %w", err)
 	}
 	fmt.Printf("deleted %s branch\n", branch)

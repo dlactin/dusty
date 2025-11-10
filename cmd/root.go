@@ -13,6 +13,7 @@ var (
 	ageFlag    int
 	mergedFlag bool
 	pruneFlag  bool
+	forceFlag  bool
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -27,8 +28,15 @@ BRANCH NAME - AUTHOR NAME, Age: X days, Merged: (bool)
 
 Protected branches are excluded (main and master)`,
 	Version: getVersion(),
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
+	PreRunE: func(cmd *cobra.Command, args []string) error {
+		// Force can only be used with the prune flag
+		if cmd.Flags().Changed("force") {
+			if !cmd.Flags().Changed("prune") {
+				return fmt.Errorf("-p/--prune flag is required when -f/--force is used")
+			}
+		}
+		return nil
+	},
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		localBranches, err := git.GetLocalBranches()
@@ -63,7 +71,7 @@ Protected branches are excluded (main and master)`,
 			merged := matchedBranches[branchIndex].Merged
 
 			if pruneFlag {
-				err := git.DelBranch(name)
+				err := git.DelBranch(name, forceFlag)
 				if err != nil {
 					return err
 				}
@@ -74,7 +82,6 @@ Protected branches are excluded (main and master)`,
 		}
 
 		return nil
-
 	},
 }
 
@@ -90,7 +97,8 @@ func Execute() {
 func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
-	rootCmd.PersistentFlags().IntVarP(&ageFlag, "age", "a", 0, "Only show branches older than x days")
+	rootCmd.PersistentFlags().IntVarP(&ageFlag, "age", "a", 0, "Filter branches older than x days")
 	rootCmd.PersistentFlags().BoolVarP(&pruneFlag, "prune", "p", false, "Prune matching branches")
-	rootCmd.PersistentFlags().BoolVarP(&mergedFlag, "merged", "m", false, "Only show merged branches")
+	rootCmd.PersistentFlags().BoolVarP(&mergedFlag, "merged", "m", false, "Filter merged branches")
+	rootCmd.PersistentFlags().BoolVarP(&forceFlag, "force", "f", false, "Force delete branches when prune flag is used")
 }
