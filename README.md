@@ -26,6 +26,7 @@ go install github.com/dlactin/dusty@latest
 | `--prune` | `-p` | Prune matching branches | `false` |
 | `--age` | `-a` | Show branches older than x days | `0` |
 | `--merged` | `-m` | Show merged branches | `false` |
+| `--force` | `-f` | Force prune branches that have not been merged uses `git branch -D` flag | `false` |
 | `--version` | `-v` | Prints the application version. | |
 | `--help` | `-h` | Show help information. | |
 
