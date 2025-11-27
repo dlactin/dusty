@@ -1,5 +1,7 @@
 package cmd
 
+//go:generate go run ../internal/tools/docgen/main.go
+
 import (
 	"fmt"
 	"os"
@@ -24,9 +26,18 @@ var rootCmd = &cobra.Command{
 
 It can be used to prune local branches that are older than x days or just list branches with the following metadata:
 
-BRANCH NAME - AUTHOR NAME, Age: X days, Merged: (bool)
+	BRANCH NAME - AUTHOR NAME, Age: X days, Merged: (bool)
 
 Protected branches are excluded (main and master)`,
+	Example: `
+### List branches older than 30 days that have been merged
+
+dusty -a 30 -m
+
+### Prune branches older than 60 days that have been merged
+
+dusty -a 60 -m -p
+	`,
 	Version: getVersion(),
 	PreRunE: func(cmd *cobra.Command, args []string) error {
 		// Force can only be used with the prune flag
@@ -95,10 +106,11 @@ func Execute() {
 }
 
 func init() {
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
 	rootCmd.PersistentFlags().IntVarP(&ageFlag, "age", "a", 0, "Filter branches older than x days")
 	rootCmd.PersistentFlags().BoolVarP(&pruneFlag, "prune", "p", false, "Prune matching branches")
 	rootCmd.PersistentFlags().BoolVarP(&mergedFlag, "merged", "m", false, "Filter merged branches")
 	rootCmd.PersistentFlags().BoolVarP(&forceFlag, "force", "f", false, "Force delete branches when prune flag is used")
 }
+
+// Root exposes the root command for tools like doc generators.
+func Root() *cobra.Command { return rootCmd }

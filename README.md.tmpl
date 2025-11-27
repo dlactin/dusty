@@ -22,24 +22,9 @@ go install github.com/dlactin/dusty@latest
 # Flags
 | Flag | Shorthand | Description | Default |
 | :--- | :--- | :--- | :--- |
-| `--age` | `a` | Filter branches older than x days | `0` |
-| `--force` | `f` | Force delete branches when prune flag is used | `false` |
-| `--help` | `h` | help for dusty | `false` |
-| `--merged` | `m` | Filter merged branches | `false` |
-| `--prune` | `p` | Prune matching branches | `false` |
-| `--version` | `v` | version for dusty | `false` |
+{{- range .Flags }}
+| `--{{ .Name }}` | `{{ .Shorthand }}` | {{ .Usage }} | `{{ .Default }}` |
+{{- end }}
 
 # Examples
-
-### List branches older than 30 days that have been merged
-
-```bash
-dusty -a 30 -m
-```
-
-### Prune branches older than 60 days that have been merged
-
-```bash
-dusty -a 60 -m -p
-```
-	
+{{ .Example }}
