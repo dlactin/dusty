@@ -21,6 +21,11 @@ all: build
 build:
 	go build -o $(LOCALBIN)/dusty
 
+# Build docs
+.PHONY: docs
+docs:
+	go generate cmd/root.go
+
 # Print the environment for debugging
 .PHONY: env
 env:
