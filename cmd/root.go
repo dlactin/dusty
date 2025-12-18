@@ -115,7 +115,7 @@ func init() {
 	rootCmd.PersistentFlags().BoolVarP(&pruneFlag, "prune", "p", false, "Prune matching branches")
 	rootCmd.PersistentFlags().BoolVarP(&mergedFlag, "merged", "m", false, "Filter merged branches")
 	rootCmd.PersistentFlags().BoolVarP(&forceFlag, "force", "f", false, "Force delete branches when prune flag is used")
-	rootCmd.PersistentFlags().BoolVarP(&interactiveFlag, "interactive", "i", false, "Start Dusty in interactive mode")
+	rootCmd.PersistentFlags().BoolVarP(&interactiveFlag, "interactive", "i", false, "Start dusty in interactive mode")
 }
 
 // Root exposes the root command for tools like doc generators.
