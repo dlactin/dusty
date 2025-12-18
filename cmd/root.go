@@ -7,15 +7,17 @@ import (
 	"os"
 
 	"github.com/dlactin/dusty/internal/git"
+	"github.com/dlactin/dusty/internal/tui"
 	"github.com/spf13/cobra"
 )
 
 // Package & Flag vars
 var (
-	ageFlag    int
-	mergedFlag bool
-	pruneFlag  bool
-	forceFlag  bool
+	ageFlag         int
+	mergedFlag      bool
+	pruneFlag       bool
+	forceFlag       bool
+	interactiveFlag bool
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -75,23 +77,26 @@ dusty -a 60 -m -p
 			matchedBranches = append(matchedBranches, localBranches[branchIndex])
 		}
 
-		for branchIndex := range matchedBranches {
-			name := matchedBranches[branchIndex].Name
-			author := matchedBranches[branchIndex].Author
-			age := matchedBranches[branchIndex].Age
-			merged := matchedBranches[branchIndex].Merged
+		if interactiveFlag {
+			tui.New(matchedBranches)
+		} else {
+			for branchIndex := range matchedBranches {
+				name := matchedBranches[branchIndex].Name
+				author := matchedBranches[branchIndex].Author
+				age := matchedBranches[branchIndex].Age
+				merged := matchedBranches[branchIndex].Merged
 
-			if pruneFlag {
-				err := git.DelBranch(name, forceFlag)
-				if err != nil {
-					return err
+				if pruneFlag {
+					err := git.DelBranch(name, forceFlag)
+					if err != nil {
+						return err
+					}
+				} else {
+					fmt.Printf("%s - %s, Age: %d days, Merged: %t\n", name, author, age, merged)
 				}
-			} else {
-				fmt.Printf("%s - %s, Age: %d days, Merged: %t\n", name, author, age, merged)
+
 			}
-
 		}
-
 		return nil
 	},
 }
@@ -110,6 +115,7 @@ func init() {
 	rootCmd.PersistentFlags().BoolVarP(&pruneFlag, "prune", "p", false, "Prune matching branches")
 	rootCmd.PersistentFlags().BoolVarP(&mergedFlag, "merged", "m", false, "Filter merged branches")
 	rootCmd.PersistentFlags().BoolVarP(&forceFlag, "force", "f", false, "Force delete branches when prune flag is used")
+	rootCmd.PersistentFlags().BoolVarP(&interactiveFlag, "interactive", "i", false, "Start Dusty in interactive mode")
 }
 
 // Root exposes the root command for tools like doc generators.
