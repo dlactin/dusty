@@ -25,6 +25,7 @@ go install github.com/dlactin/dusty@latest
 | `--age` | `a` | Filter branches older than x days | `0` |
 | `--force` | `f` | Force delete branches when prune flag is used | `false` |
 | `--help` | `h` | help for dusty | `false` |
+| `--interactive` | `i` | Start dusty in interactive mode | `false` |
 | `--merged` | `m` | Filter merged branches | `false` |
 | `--prune` | `p` | Prune matching branches | `false` |
 | `--version` | `v` | version for dusty | `false` |
